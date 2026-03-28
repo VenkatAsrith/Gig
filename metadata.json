@@ -1,0 +1,9 @@
+{
+  "name": "GigNest",
+  "description": "A modern freelance marketplace connecting top talent with innovative projects, featuring AI-powered matching and real-time collaboration.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

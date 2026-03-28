@@ -1,0 +1,134 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the platform, either a freelancer or a client.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique identifier for the user." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "photoURL": { "type": "string", "format": "uri", "description": "The user's profile photo URL." },
+        "role": { "type": "string", "enum": ["freelancer", "client"], "description": "The role of the user." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the user was created." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "When the user was last updated." }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "Extended profile information for a freelancer.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's UID." },
+        "bio": { "type": "string", "description": "A short biography." },
+        "skills": { "type": "array", "items": { "type": "string" }, "description": "List of skills." },
+        "portfolio": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "experience": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "company": { "type": "string" },
+              "role": { "type": "string" },
+              "duration": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "rating": { "type": "number", "description": "Average rating." },
+        "reviewCount": { "type": "integer", "description": "Total number of reviews." }
+      },
+      "required": ["uid"]
+    },
+    "Gig": {
+      "title": "Gig",
+      "description": "A service offered by a freelancer.",
+      "type": "object",
+      "properties": {
+        "freelancerId": { "type": "string", "description": "The UID of the freelancer offering the gig." },
+        "title": { "type": "string", "description": "The title of the gig." },
+        "description": { "type": "string", "description": "Detailed description of the gig." },
+        "price": { "type": "number", "description": "The price for the service." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Tags for searchability." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["freelancerId", "title", "price"]
+    },
+    "Job": {
+      "title": "Job",
+      "description": "A job posted by a client.",
+      "type": "object",
+      "properties": {
+        "clientId": { "type": "string", "description": "The UID of the client who posted the job." },
+        "title": { "type": "string", "description": "The title of the job." },
+        "description": { "type": "string", "description": "Detailed description of the job." },
+        "budget": { "type": "number", "description": "The budget for the job." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Required skills or tags." },
+        "status": { "type": "string", "enum": ["open", "closed"], "description": "The current status of the job." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientId", "title", "budget"]
+    },
+    "Application": {
+      "title": "Application",
+      "description": "An application for a job by a freelancer.",
+      "type": "object",
+      "properties": {
+        "jobId": { "type": "string", "description": "The ID of the job." },
+        "freelancerId": { "type": "string", "description": "The UID of the freelancer." },
+        "coverLetter": { "type": "string", "description": "The cover letter for the application." },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected"], "description": "Status of the application." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["jobId", "freelancerId", "coverLetter"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A message in a chat room.",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string", "description": "UID of the sender." },
+        "receiverId": { "type": "string", "description": "UID of the receiver." },
+        "content": { "type": "string", "description": "The message content." },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "roomId": { "type": "string", "description": "The ID of the chat room." }
+      },
+      "required": ["senderId", "receiverId", "content", "roomId"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "A review given to a user.",
+      "type": "object",
+      "properties": {
+        "reviewerId": { "type": "string", "description": "UID of the reviewer." },
+        "revieweeId": { "type": "string", "description": "UID of the reviewee." },
+        "rating": { "type": "number", "description": "Rating from 1 to 5." },
+        "comment": { "type": "string", "description": "The review comment." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reviewerId", "revieweeId", "rating"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "User profiles and basic info." },
+    "/profiles/{uid}": { "schema": "Profile", "description": "Detailed freelancer profiles." },
+    "/gigs/{gigId}": { "schema": "Gig", "description": "Freelancer services (gigs)." },
+    "/jobs/{jobId}": { "schema": "Job", "description": "Client job postings." },
+    "/applications/{appId}": { "schema": "Application", "description": "Job applications." },
+    "/messages/{msgId}": { "schema": "Message", "description": "Chat messages." },
+    "/reviews/{reviewId}": { "schema": "Review", "description": "User reviews." }
+  }
+}
